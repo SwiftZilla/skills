@@ -1,5 +1,5 @@
 ---
-name: swift-deep-insight
+name: swiftzilla_search
 description: Search Swift technical context using SwiftZilla Deep Insight™. Use this skill when the user asks questions about Swift programming, Apple frameworks (SwiftUI, Combine, etc.), or requires deep technical insights.
 license: Proprietary
 compatibility: Requires curl, jq

@@ -10,7 +10,7 @@ Search Swift technical context using SwiftZilla Deep Insight™.
 
 **Use for:** Swift programming questions, Apple frameworks (SwiftUI, Combine, etc.), or when requiring deep technical insights about the Apple ecosystem.
 
-**Location:** [skills/swift-deep-insight/](./skills/swift-deep-insight/)
+**Location:** [skills/swiftzilla_search/](./skills/swiftzilla_search/)
 
 **Requirements:** `curl`, `jq`, SwiftZilla API key
 
