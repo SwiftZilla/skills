@@ -9,7 +9,7 @@ license: Proprietary
 compatibility: Requires macOS 13+. The binary is a universal macOS executable (arm64 + x86_64).
 metadata:
   author: SwiftZilla
-  version: "67092fc"
+  version: "6db836e"
 ---
 
 # SwiftZilla CLI
