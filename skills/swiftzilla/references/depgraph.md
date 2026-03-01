@@ -1,67 +1,38 @@
-# DepGraph — Swift Dependency and Impact Analyzer
+# DepGraph Tool Reference
 
-## What it is
+## Purpose
+Static analyzer for Swift codebases. Builds a graph of symbols, references, and conformances to determine dependency chains and code change blast radius.
 
-`depgraph` is a static analyzer for Swift codebases. It parses `.swift` files through the Swift AST and builds a graph of:
+## Command 1: Index (`depgraph index`)
 
-- symbols defined per file
-- symbols referenced per file
-- protocol/inheritance conformances
-
-Use it to understand dependency chains and the blast radius of a code change.
-
-## Core use cases
-
-- "Who calls this function? Where is it used?"
-- "If I change these lines, what files break?"
-- "What does this code depend on before I refactor it?"
-
-## Commands
-
-### `swiftzilla depgraph index`
-
-Build or refresh the project dependency index.
-
+### Syntax
 ```bash
-swiftzilla depgraph index --path /path/to/project
+./{workspace_or_agent_folder}/swiftzilla/scripts/swiftzilla depgraph index --path <DIRECTORY_PATH>
 ```
 
-| Argument | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `--path`, `-p` | No | Current directory | Root directory to scan |
+### Constraints
+*   You MUST run this command in the project root if it is the first time analyzing the project, OR if structural file changes (new files, deleted files) have occurred.
+*   Output: Creates a `.swiftzilla_depgraph_index` file in the specified path.
 
-Output: `.swiftzilla_depgraph_index` in project root.
+## Command 2: Impact Analysis (`depgraph impact`)
 
-### `swiftzilla depgraph impact`
-
-Analyze dependency + impact for a specific line range.
-
+### Syntax
 ```bash
-swiftzilla depgraph impact Services/UserService.swift --lines 10:30
+./{workspace_or_agent_folder}/swiftzilla/scripts/swiftzilla depgraph impact <FILE_PATH> --lines <START>:<END>
 ```
 
-| Argument | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `file` | Yes | — | File path (exact, partial, or filename) |
-| `--lines`, `-l` | Yes | — | Line range as `start:end` |
+### Constraints
+*   `FILE_PATH`: Must be the path to the `.swift` file being analyzed.
+*   `--lines`: Must be the exact line range formatted as `START:END` (e.g., `10:30`).
 
-Output includes:
+### Output Interpretation
+The command outputs structured data that you MUST use to answer the user's request:
+*   `symbolsInRange`: The symbols (functions, variables, classes) defined or referenced in the exact line range.
+*   `dependencies`: The files that the provided line range depends on to function.
+*   `impactedFiles`: The files that will break or be affected if the symbols defined in the line range change.
+*   `usages`: Detailed list showing `symbol` and `usedIn` (file and line numbers where the symbol is called).
 
-- `symbolsInRange` — symbols found in the line range
-  - `defined` — classes, structs, enums, protocols, extensions, **functions**, **variables**, **typealiases**, **inits**, **enum cases**
-  - `referenced` — all type/symbol references used in the range
-- `dependencies` (files this range depends on)
-- `impactedFiles` (files affected by symbols defined in range)
-- `usages` — per-symbol caller detail:
-  - `symbol` — the defined symbol name
-  - `usedIn` — list of `{ file, lines }` showing which files reference this symbol and at which lines
-
-## Typical workflow
-
-```bash
-# 1. Build index once (re-run after structural file changes)
-swiftzilla depgraph index --path .
-
-# 2. Analyze blast radius — who calls this, what depends on it
-swiftzilla depgraph impact Services/UserService.swift --lines 10:30
-```
+## Execution Strategy
+1.  Verify if `.swiftzilla_depgraph_index` exists in the project root. If not, run `depgraph index`.
+2.  Determine the target file and line numbers based on the user's focus.
+3.  Run `depgraph impact` and parse `impactedFiles` and `usages` to report blast radius to the user.

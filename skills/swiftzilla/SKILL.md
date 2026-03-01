@@ -9,54 +9,44 @@ license: Proprietary
 compatibility: Requires macOS 13+. The binary is a universal macOS executable (arm64 + x86_64).
 metadata:
   author: SwiftZilla
-  version: "6db836e"
+  version: "67d5edb"
 ---
 
-# SwiftZilla CLI
+# SwiftZilla Skill Instructions
 
-Swift/iOS static analysis and knowledge base:
+You are equipped with the **SwiftZilla** CLI, a static analysis and knowledge base tool for Swift/iOS projects. 
 
-1. **`depgraph`** — Find who calls a function, what breaks if you refactor, track call sites and blast radius
-2. **`ask`** — Consult Swift/iOS/tvOS/watchOS/macOS documentation and best practices
+**CRITICAL INSTRUCTION**: Do NOT guess command arguments or syntax. You MUST follow the progressive disclosure steps below based on the user's intent.
 
-## Installation
+## Step 1: Determine the User's Intent
 
-The `swiftzilla` binary is in `{workspace_or_agent_folder}/swiftzilla/scripts/`. Make it executable:
+Analyze the user's request to choose the appropriate tool:
 
-```bash
-chmod +x ./{workspace_or_agent_folder}/swiftzilla/scripts/swiftzilla
-```
+*   **IF** the user wants to know who calls a function, what breaks if a file changes, the blast radius of a refactor, or symbol dependencies:
+    *   **ACTION**: You need the **`depgraph`** tool. Proceed immediately to Step 2A.
+*   **IF** the user asks a question about Swift, iOS, tvOS, watchOS, macOS best practices, implementation patterns, or architecture:
+    *   **ACTION**: You need the **`ask`** tool. Proceed immediately to Step 2B.
 
-## When to use SwiftZilla
+## Step 2: Read Tool Reference (Progressive Disclosure)
 
-| Situation | Command |
-|-----------|---------|
-| First run in a new project | `depgraph index --path .` |
-| Who calls this function/method? | `depgraph impact <file> --lines start:end` |
-| What breaks if I change these lines? | `depgraph impact <file> --lines start:end` |
-| What does this code depend on? | `depgraph impact <file> --lines start:end` |
-| Ask Swift/iOS best-practice questions | `ask "your question"` |
+Before executing any commands, you MUST read the specific reference file to understand the exact syntax and expected outputs.
 
-## Quick Start
+### Step 2A: Using `depgraph`
+1. Use your file reading tool to read `{workspace_or_agent_folder}/swiftzilla/scripts/references/depgraph.md`.
+2. Understand the required command structure (`depgraph index` or `depgraph impact`).
+3. Ensure the `swiftzilla` binary at `{workspace_or_agent_folder}/swiftzilla/scripts/swiftzilla` is executable (`chmod +x`).
+4. Execute the command as specified in the reference.
+5. Parse the output exactly as instructed in the reference to answer the user's request.
 
-```bash
-# 1. Build dependency index (re-run after structural file changes)
-swiftzilla depgraph index --path .
+### Step 2B: Using `ask`
+1. Use your file reading tool to read `{workspace_or_agent_folder}/swiftzilla/scripts/references/ask.md`.
+2. Understand the required command structure (`ask "query"`).
+3. Ensure the `swiftzilla` binary at `{workspace_or_agent_folder}/swiftzilla/scripts/swiftzilla` is executable (`chmod +x`).
+4. Execute the command as specified in the reference.
+5. Return the exact knowledge base answer to the user.
 
-# 2. Analyze blast radius — who calls this, what depends on it
-swiftzilla depgraph impact UserService.swift --lines 10:30
+## execution guidelines
 
-# 3. Ask the Swift/iOS knowledge base
-swiftzilla ask "how to use async/await with actors"
-```
-
-## Detailed References
-
-- [DepGraph Reference](references/depgraph.md) — dependency indexing and impact analysis
-- [Ask Reference](references/ask.md) — curated Swift/iOS knowledge lookup
-
-## Requirements
-
-- macOS 13 (Ventura) or later
-- A Swift project with `.swift` source files for `depgraph`
-- `SWIFTZILLA_API_KEY` for `ask` (see [Ask Reference](references/ask.md))
+*   **No prose**: Do not output conversational filler. Execute commands directly.
+*   **Pathing**: The `swiftzilla` executable is located relative to the workspace at `swiftzilla/scripts/swiftzilla`.
+*   **Errors**: If the CLI returns an error, analyze the error message. If it involves missing files, verify the file paths. If it involves missing API keys, check the `ask` reference. Do not ask the user for help unless you cannot resolve the syntax or environment issue.

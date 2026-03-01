@@ -1,58 +1,28 @@
-# Ask — Swift/iOS Knowledge Base Query
+# Ask Tool Reference
 
-## What it is
+## Purpose
+Queries the SwiftZilla MCP knowledge base for natural-language Swift/iOS best practices, patterns, and architecture tradeoff guidance.
 
-`ask` sends a natural-language Swift/iOS question to the SwiftZilla MCP knowledge base and returns a curated answer.
+## Execution Syntax
 
-It is for implementation guidance, patterns, best practices, and architecture tradeoffs.
-
-## When to use
-
-- "How should I implement X in SwiftUI?"
-- "What is the best practice for actors/concurrency here?"
-- "How do I test this iOS pattern?"
-
-## Command
-
-### `swiftzilla ask`
+Execute the following command, replacing `"YOUR_QUERY"` with the specific Swift/iOS question:
 
 ```bash
-swiftzilla ask "how to use async/await in Swift"
+./{workspace_or_agent_folder}/swiftzilla/scripts/swiftzilla ask "YOUR_QUERY"
 ```
 
-| Argument | Required | Description |
-|----------|----------|-------------|
-| `query` | Yes | Natural-language Swift/iOS question |
+## Constraints & Requirements
 
-## Requirements
+*   **API Key**: This command REQUIRES the `SWIFTZILLA_API_KEY` environment variable.
+    *   If the command fails with an authentication or missing key error, check if `.env` exists in the project root containing `SWIFTZILLA_API_KEY=...` or ensure it is exported in the shell environment.
+    *   If the key is completely missing, you MUST inform the user to provide it. Do NOT hallucinate an answer.
+*   **Query Format**: The query must be wrapped in double quotes.
 
-Set `SWIFTZILLA_API_KEY` via environment variable or `.env` file.
+## Output Handling
 
-Option A:
+*   The output will contain the curated answer from the knowledge base.
+*   Analyze the output and present the technical guidance directly to the user. Do not summarize unless the user specifically asked for a summary.
 
-```bash
-export SWIFTZILLA_API_KEY=your_key_here
-```
+## Restrictions
 
-Option B (`.env` in project root):
-
-```dotenv
-SWIFTZILLA_API_KEY=your_key_here
-```
-
-## Example questions
-
-```bash
-swiftzilla ask "best practices for Swift Concurrency actors"
-swiftzilla ask "how to implement navigation in SwiftUI"
-swiftzilla ask "MVVM vs MVC in iOS apps"
-swiftzilla ask "how to mock network calls in XCTest"
-```
-
-## Ask vs DepGraph
-
-| Need | Command |
-|------|---------|
-| Analyze file dependencies in your project | `depgraph query` |
-| Estimate blast radius for line-level change | `depgraph impact` |
-| Get Swift/iOS implementation guidance | `ask` |
+*   Do NOT use `ask` for analyzing file dependencies or blast radius. Use `depgraph` instead.
