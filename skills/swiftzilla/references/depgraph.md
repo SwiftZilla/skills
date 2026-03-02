@@ -12,7 +12,7 @@ Static analyzer for Swift codebases. Builds a graph of symbols, references, and 
 
 ### Constraints
 *   You MUST run this command in the project root if it is the first time analyzing the project, OR if structural file changes (new files, deleted files) have occurred.
-*   Output: Creates a `.swiftzilla_depgraph_index` file in the specified path.
+*   Output: Creates a `.swiftzilla.index` file in the specified path.
 
 ## Command 2: Impact Analysis (`depgraph impact`)
 
