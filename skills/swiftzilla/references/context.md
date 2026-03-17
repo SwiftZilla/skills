@@ -1,43 +1,39 @@
 # Context Tool Reference
 
-Semantic engine for local Swift projects. Uses Hybrid Search (Vector + BM25) and AST Skeletons.
+Use this tool for local Swift project understanding and impact analysis.
 
 ## Command 1: `context sync`
-Synchronizes the local codebase with the encrypted cache. 
+Rebuilds the encrypted semantic index.
 
-### Syntax
 ```bash
-./swiftzilla/scripts/swiftzilla context sync --path <PROJECT_ROOT>
+./swiftzilla context sync --path <PROJECT_ROOT>
 ```
 
-### LLM Strategy
-*   **WHEN**: Run this if `~/.swiftzilla/cache` does not contain an index for the project OR if files have been modified/added since the last sync.
-*   **PURPOSE**: Rebuilds the "brain" of the project (extracts signatures, generates embeddings, encrypts).
+### When to Sync? (LLM Strategy)
+1.  **Missing Cache**: Run this if no corresponding `.bin` file exists in `~/.swiftzilla/cache`.
+2.  **Stale Index**: Use `ls -l` to compare the timestamp of the project directory with the cache file. If the project is newer, run `sync`.
+3.  **Ambiguity**: If `query` returns unexpected results after a refactor, run `sync`.
 
 ## Command 2: `context query`
-Semantic search for code components.
+Semantic search across the codebase.
 
-### Syntax
 ```bash
-./swiftzilla/scripts/swiftzilla context query "<NATURAL_LANGUAGE_QUERY>"
+./swiftzilla context query "<NATURAL_LANGUAGE_QUERY>"
 ```
-
-### LLM Strategy
-*   **USE FOR**: "Where is X implemented?", "List all ViewModels", "How does the networking work?".
-*   **OUTPUT**: Returns ranked code skeletons with file paths and line numbers.
+- Returns ranked code "skeletons" (signatures + properties).
+- Use for "Where is X implemented?", "List all SwiftUI Views".
 
 ## Command 3: `context impact`
-Refactoring impact analysis using intent.
+Analyzes the blast radius of a planned change.
 
-### Syntax
 ```bash
-./swiftzilla/scripts/swiftzilla context impact "<INTENTION_OR_COMPONENT_NAME>"
+./swiftzilla context impact "<INTENTION_OR_COMPONENT_NAME>"
 ```
+- Locates the target semantically.
+- Generates a Mermaid dependency graph.
+- Lists files that will break if the target changes.
 
-### LLM Strategy
-*   **USE FOR**: "What happens if I change the LoginService?", "Find blast radius of modifying the user session logic".
-*   **OUTPUT**: Identifies the target component semantically and generates a Mermaid dependency graph of all impacted files.
-
-## Constraints
-*   **Encryption**: The index is stored as an encrypted `.bin` file in `~/.swiftzilla/cache`. Never attempt to read this file directly.
-*   **Project Context**: The CLI automatically detects the project based on the current directory. Always `cd` into the project root before querying.
+## Diagnostics
+- **Error: ❌ Index not found**: Trigger `context sync` immediately.
+- **Error: ❌ Authentication failed**: The `SWIFTZILLA_API_KEY` is invalid or expired.
+- **Empty results**: The query is too specific or not semantically relevant. Try a broader intent.
