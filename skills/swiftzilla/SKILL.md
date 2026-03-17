@@ -10,7 +10,7 @@ license: Proprietary
 compatibility: Requires macOS 14+. The binary is a universal macOS executable (arm64 + x86_64).
 metadata:
   author: SwiftZilla
-  version: "fe669f8"
+  version: "6088c0b"
 ---
 
 # SwiftZilla: Semantic Code Engine
