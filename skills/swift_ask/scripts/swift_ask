@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Get the directory where the script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Check if the compiled binary exists in the same directory
+if [ -f "$SCRIPT_DIR/swift-ask" ]; then
+    "$SCRIPT_DIR/swift-ask" "$@"
+else
+    # Fallback to swift run if binary is not present (local dev)
+    swift run swift-ask "$@"
+fi
