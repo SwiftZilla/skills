@@ -7,7 +7,7 @@ license: Proprietary
 compatibility: Requires macOS 14+. Universal macOS executable (arm64 + x86_64).
 metadata:
   author: SwiftZilla
-  version: "09498b7"
+  version: "8e919ce"
 ---
 
 # Swift Review: PR Safety & Risk Analysis
