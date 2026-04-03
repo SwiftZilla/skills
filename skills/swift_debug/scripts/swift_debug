@@ -1,7 +1,2 @@
 #!/bin/bash
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-if [ -f "$SCRIPT_DIR/swift-debug" ]; then
-    "$SCRIPT_DIR/swift-debug" "$@"
-else
-    swift run swift-debug "$@"
-fi
+exec "$(dirname "$0")/swift-debug" "$@"

@@ -1,43 +1,50 @@
 ---
 name: swift_debug
 description: >-
-  Use this skill for semantic runtime debugging and state analysis. 
+  Use this skill for semantic runtime debugging and state analysis.
   It provides LLDB plugins to bridge code context with runtime state.
+  Use when debugging crashes, inspecting variable state at runtime,
+  setting semantic breakpoints, or analyzing why code behaves differently
+  than expected — even if they don't mention "LLDB" or "debugger".
 license: Proprietary
 compatibility: Requires macOS 14+. Universal macOS executable (arm64 + x86_64).
 metadata:
   author: SwiftZilla
-  version: "8e919ce"
+  version: "9284a89"
 ---
 
 # Swift Debug: Semantic Runtime Debugging
 
-Use this tool to bridge static code context with dynamic runtime state.
+Bridge static code context with dynamic runtime state using LLDB extensions.
 
-> **Note**: The tool path `<SWIFT_DEBUG_SKILL_PATH>` refers to the root directory of this skill.
+## Setup
 
-## 🛠️ Tool Usage
+Install the LLDB plugin once per environment:
 
-Run `install` to setup LLDB plugin, then use `sz_` commands in LLDB.
-- **Intent**: "Debug crash", "Inspect runtime state", "Semantic breakpoints".
-
-### Tool Commands
-
-1.  **`install`**: Sets up the LLDB Python plugin and generates a script in `~/.lldbinit`.
 ```bash
-<SWIFT_DEBUG_SKILL_PATH>/scripts/swift_debug install
+scripts/swift_debug install
 ```
 
-2.  **`explain`**: Explains the purpose and context of a specific file and line.
-3.  **`location`**: Finds the file and line for a semantic query.
-4.  **`state`**: Processes raw runtime data (JSON) into a semantic report.
+This sets up the Python plugin and adds the loader script to `~/.lldbinit`.
 
-### LLDB Extension Commands (After Install)
+## LLDB Commands (After Install)
 
-- **`sz_break "<QUERY>"`**: Sets a breakpoint by searching for code semantically.
-- **`sz_explain`**: Explains the current execution frame.
-- **`sz_inspect`**: Captures stacktrace and variable values for semantic analysis.
+Once installed, these commands are available in any LLDB session:
 
-## 🔄 Procedural Workflow
-1. **Install**: Run `install` once.
-2. **Debug**: Use `sz_inspect` or `sz_explain` during an LLDB session.
+- **`sz_break "<QUERY>"`**: Set a breakpoint by semantic search (e.g., `sz_break "user authentication logic"`)
+- **`sz_explain`**: Explain the current execution frame — what this code does and why
+- **`sz_inspect`**: Capture stacktrace and variable values for semantic analysis
+
+## Gotchas
+
+- The plugin must be installed BEFORE debugging — `sz_*` commands will not exist in LLDB without running `install` first.
+- `sz_break` uses semantic matching, not line numbers. If the query is too broad, it may set multiple breakpoints — review them with `breakpoint list`.
+- Runtime state captured by `sz_inspect` is a snapshot — variables may change between inspection and your next step.
+- If `~/.lldbinit` already exists and is managed by another tool, the install script appends to it. Check for conflicts if LLDB behaves unexpectedly.
+
+## Workflow
+
+1. **Install**: Run `scripts/swift_debug install` (one-time setup)
+2. **Locate**: Use `sz_break "<query>"` to set breakpoints semantically
+3. **Inspect**: When hit, use `sz_inspect` to capture runtime state
+4. **Understand**: Use `sz_explain` to understand the execution context
