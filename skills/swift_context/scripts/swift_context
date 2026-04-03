@@ -1,7 +1,2 @@
 #!/bin/bash
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-if [ -f "$SCRIPT_DIR/swift-context" ]; then
-    "$SCRIPT_DIR/swift-context" "$@"
-else
-    swift run swift-context "$@"
-fi
+exec "$(dirname "$0")/swift-context" "$@"
