@@ -1,7 +1,2 @@
 #!/bin/bash
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-if [ -f "$SCRIPT_DIR/swift-onboard" ]; then
-    "$SCRIPT_DIR/swift-onboard" "$@"
-else
-    swift run swift-onboard "$@"
-fi
+exec "$(dirname "$0")/swift-onboard" "$@"
